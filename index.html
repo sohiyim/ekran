@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekranni ulash</title>
+</head>
+<body>
+    <h2>Ekranni ulash uchun ruxsat bering</h2>
+    <button id="start">Ruxsat berish</button>
+    <video id="screenVideo" autoplay style="width: 80%; border: 2px solid black;"></video>
+
+    <script>
+        document.getElementById("start").addEventListener("click", async () => {
+            try {
+                // Foydalanuvchidan ekran ulashga ruxsat so‘rash
+                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+                
+                // Videoni o‘ynatish
+                document.getElementById("screenVideo").srcObject = stream;
+
+                // Videoni serverga yuborish (WebRTC yoki WebSocket orqali)
+                const socket = new WebSocket("wss://your-server.com");
+                socket.onopen = () => {
+                    const videoTrack = stream.getVideoTracks()[0];
+                    const sender = socket.send(videoTrack);
+                };
+
+            } catch (error) {
+                console.error("Ekranni ulash rad etildi:", error);
+            }
+        });
+    </script>
+</body>
+</html>
